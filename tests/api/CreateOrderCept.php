@@ -8,6 +8,6 @@ $I->seeResponseIsJson();
 $I->seeResponseMatchesJsonType([
     'userId' => 'integer:=764|string:=764',
     'retailerId' => 'integer:=82|string:82',
-    'status' => 'integer:=4|string:=4', // shipped means 5 in the DB.
+    'status' => 'integer:=4|string:=4', // pending's ID is 4 in the DB.
     'total' => 'integer:=500|string:=500'
 ]);

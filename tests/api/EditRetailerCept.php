@@ -21,7 +21,3 @@ $I->seeResponseMatchesJsonType([
     'email'     => 'string:=' . $email
 ]);
 
-sleep(10);
-
-var_dump($name, $location, $email);
-
