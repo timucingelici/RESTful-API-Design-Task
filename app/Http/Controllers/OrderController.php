@@ -20,13 +20,6 @@ class OrderController extends Controller
         $userId = request()->get('user_id');
         $retailerId = request()->get('retailer_id');
 
-//        $order = new Order();
-//        return $order
-//            ->filterBy('status', array_search($status, Order::$statuses))
-//            ->filterBy('userId', $userId)
-//            //->filterBy('retailerId', $retailerId)
-//            ->get();
-
         $order = Order::query();
 
         if($status){
@@ -49,20 +42,19 @@ class OrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Requests\OrderCreateRequest $request)
     {
-        //
-    }
+        $order = new Order();
+        $order->userId = $request->get('userId');
+        $order->retailerId = $request->get('retailerId');
+        $order->total = $request->get('total');
+        $order->status = array_search($request->get('status'), Order::$statuses);
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+        if($order->save()){
+            return $order;
+        }
+
+        return response()->json(['success' => false], 500);
     }
 
     /**
@@ -73,19 +65,20 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        $status = request()->get('status');
-
-        return Order::find($id);
+        $item = Order::find($id);
+        return $item ? $item : response()->json(['success' => false], 404);
     }
 
     public function showUser($id)
     {
-        return Order::find($id)->user;
+        $item = Order::find($id)->user;
+        return $item ? $item : response()->json(['success' => false], 404);
     }
 
     public function showRetailer($id)
     {
-        return Order::find($id)->retailer;
+        $item = Order::find($id)->retailer;
+        return $item ? $item : response()->json(['success' => false], 404);
     }
 
     public function summary(){
@@ -103,36 +96,21 @@ class OrderController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Requests\OrderUpdateRequest $request, $id)
     {
-        //
+        $result = Order::where('id', $id)->update(['status' => array_search($request->get('status'), Order::$statuses)]);
+
+        if($result) {
+            return Order::find($id);
+        }
+
+        return response()->json(['success' => false], 422);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

@@ -20,27 +20,6 @@ class RetailerController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -48,7 +27,8 @@ class RetailerController extends Controller
      */
     public function show($id)
     {
-        return Retailer::find($id);
+        $item = Retailer::find($id);
+        return $item ? $item : response()->json(['success' => false], 404);
     }
 
     /**
@@ -57,31 +37,21 @@ class RetailerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Requests\RetailerEditRequest $request, $id)
     {
-        //
+        $retailer = Retailer::find($id);
+
+        if($retailer){
+            $retailer->name = $request->get('name');
+            $retailer->location = $request->get('location');
+            $retailer->email = $request->get('email');
+
+            if($retailer->save()){
+                return $retailer;
+            }
+        }
+
+        return response()->json(['success' => false], 500);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

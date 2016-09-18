@@ -12,34 +12,51 @@
 */
 
 Route::get('/', function () {
-    return ['api' => 'v0.1'];
+    return "Nothing to see here...";
 });
 
-// USERS
-Route::get('/users', 'UserController@index');
-Route::group(['prefix' => 'user'], function(){
-    Route::get('{id}', 'UserController@show');
-    Route::get('{id}/orders', 'UserController@orders');
-});
+Route::group(['prefix' => '/api/v1','middleware' => 'api'], function(){
+    Route::get('/', function () {
+        return ['api' => 'v0.1'];
+    });
 
-// ORDERS
-Route::get('/orders', 'OrderController@index');
-Route::get('/orders/summary', 'OrderController@summary');
+    // USERS
+    Route::get('/users', 'UserController@index');
+    Route::post('/users', 'UserController@create');
+    Route::group(['prefix' => 'user'], function(){
+        Route::get('{id}', 'UserController@show');
+        //Route::patch('{id}', 'UserController@edit');
+        //Route::delete('{id}', 'UserController@delete');
 
-Route::group(['prefix' => 'order'], function(){
-    Route::get('{id}', 'OrderController@show');
-    Route::get('{id}/user', 'OrderController@showUser');
-    Route::get('{id}/retailer', 'OrderController@showRetailer');
-});
+        Route::get('{id}/orders', 'UserController@orders');
 
-// RETAILERS
-Route::get('/retailers', 'RetailerController@index');
-Route::group(['prefix' => 'retailer'], function(){
-    Route::get('{id}', 'RetailerController@show');
-});
+    });
 
-// ROLES
-Route::get('/roles', 'RoleController@index');
-Route::group(['prefix' => 'role'], function(){
-    Route::get('{id}', 'RoleController@show');
+    // ORDERS
+    Route::get('/orders', 'OrderController@index');
+    Route::get('/orders/summary', 'OrderController@summary');
+
+    Route::group(['prefix' => 'order'], function(){
+        Route::get('{id}', 'OrderController@show');
+        Route::patch('{id}', 'OrderController@update');
+        //Route::delete('{id}', 'OrderController@delete');
+
+        Route::get('{id}/user', 'OrderController@showUser');
+        Route::get('{id}/retailer', 'OrderController@showRetailer');
+
+        Route::post('/', 'OrderController@create');
+    });
+
+    // RETAILERS
+    Route::get('/retailers', 'RetailerController@index');
+    Route::group(['prefix' => 'retailer'], function(){
+        Route::get('{id}', 'RetailerController@show');
+        Route::patch('{id}', 'RetailerController@edit');
+    });
+
+    // ROLES
+    Route::get('/roles', 'RoleController@index');
+    Route::group(['prefix' => 'role'], function(){
+        Route::get('{id}', 'RoleController@show');
+    });
 });

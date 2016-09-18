@@ -27,6 +27,7 @@ class RoleController extends Controller
      */
     public function show($id)
     {
-        return Role::find($id);
+        $item = Role::find($id);
+        return $item ? $item : response()->json(['success' => false], 404);
     }
 }
